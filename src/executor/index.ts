@@ -1,1 +1,2 @@
-export { TextExecutor, executeTextMode } from './TextExecutor';
+export { Executor, execute } from './Executor';
+export type Functions = import('./Executor').Functions;

@@ -1,19 +1,31 @@
 /* eslint-disable no-eval */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
-export class TextExecutor {
+export type Functions = Record<string, (...args: any[]) => any>;
+
+export class Executor {
   protected ignoreCallbacks = false;
 
-  constructor(code: string, onLineOutput: (line: string) => void, onLineError: (line: string) => void) {
+  constructor(
+    code: string,
+    onLineOutput: (line: string) => void,
+    onLineError: (line: string) => void,
+    functions: Functions = {},
+  ) {
     const gbPrint_5637234738 = (...args: any[]) => {
       !this.ignoreCallbacks && onLineOutput(args.map((a) => String(a)).join(' '));
     };
     const gbPrintError_3t423434 = (...args: any[]) => {
       !this.ignoreCallbacks && onLineError(args.map((a) => String(a)).join(' '));
     }
+    let injectFunctions = '';
+    for (const func of Object.keys(functions)) {
+      injectFunctions += `const ${func} = functions.${func};\n`;
+    }
     try {
       code && 
       eval(
-        code
+        injectFunctions + code
           .replace(/console\.log/g, 'gbPrint_5637234738')
           .replace(/console\.error/g, 'gbPrintError_3t423434')
       );
@@ -27,10 +39,11 @@ export class TextExecutor {
   }
 }
 
-export const executeTextMode = (
+export const execute = (
   code: string,
   onLineOutput: (line: string) => void,
-  onLineError: (line: string) => void
+  onLineError: (line: string) => void,
+  functions: Functions = {},
 ) => {
-  return new TextExecutor(code, onLineOutput, onLineError);
+  return new Executor(code, onLineOutput, onLineError, functions);
 };

@@ -12,6 +12,7 @@ function App() {
   const [execCode, setExecCode] = useState<{ mode: CodeMode, code: string }>();
   const onExecute = useCallback(() => {
     localStorage.setItem('code', code);
+    localStorage.setItem('mode', mode);
     setExecCode({ mode, code });
   }, [code, mode]);
 
