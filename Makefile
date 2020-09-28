@@ -1,5 +1,5 @@
 build:
-	npm run build
+	npm install && npm run build
 
 deploy.update: pull.master build
 
