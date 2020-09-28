@@ -1,4 +1,5 @@
-deploy.update: pull.master build
+deploy.update:
+	pull.master build
 
 pull.master:
 	git pull origin master
