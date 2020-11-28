@@ -5,7 +5,7 @@ import { useStyles } from './styles';
 import { CodeMode } from '../../types';
 import TextOutput from './TextOutput';
 import { execute, Executor, Functions } from '../../executor';
-import { drawRect, drawEllipse } from './drawing';
+import { drawRect, drawEllipse, drawCircle } from './drawing';
 
 type Props = { className?: string; program?: { mode: CodeMode, code: string } };
 
@@ -45,6 +45,7 @@ export const Output = memo(({ className, program }: Props) => {
         };
         functions.drawRect = drawRect.bind(null, getCtx);
         functions.drawEllipse = drawEllipse.bind(null, getCtx);
+        functions.drawCircle = drawCircle.bind(null, getCtx);
         functions.drawClear = clear;
       }
 
