@@ -1,17 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import clsx from 'clsx';
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useStyles } from './styles';
-import { CodeMode } from '../../types';
 import TextOutput from './TextOutput';
 import { execute, Executor, Functions } from '../../executor';
 import { drawRect, drawEllipse, drawCircle } from './drawing';
 
-type Props = { className?: string; program?: { mode: CodeMode, code: string } };
+type Props = { className?: string; program?: { code: string } };
 
 export const Output = memo(({ className, program }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const classes = useStyles();
+  const isGraphic = useMemo(() => {
+    return program?.code ? !!['drawRect', 'drawEllipse', 'drawCircle', 'drawClear']
+        .find((method) => program.code.includes(method)) : false;
+  }, [program]);
   const [output, setOutput] = useState('');
   const writeLine = useCallback((line: string) => setOutput((current) => `${current}> ${line}<br>`), []);
   const writeError = useCallback((error: string) => writeLine(`<span class="error">${error}</span>`), []);
@@ -25,7 +28,7 @@ export const Output = memo(({ className, program }: Props) => {
 
       const functions: Functions = {};
 
-      if (program.mode === CodeMode.GRAPHIC) {
+      if (isGraphic) {
         let ctx: CanvasRenderingContext2D | undefined | null = undefined;
         const getCtx = () => {
           if (ctx) return ctx;
@@ -51,10 +54,10 @@ export const Output = memo(({ className, program }: Props) => {
 
       return execute(program.code, writeLine, writeError, functions);
     });
-  }, [program]);
+  }, [program, isGraphic]);
 
   if (!program) return <TextOutput className={className} />
-  if (program.mode === CodeMode.TEXT) return <TextOutput className={className} output={output} />
+  if (!isGraphic) return <TextOutput className={className} output={output} />
 
   return (
     <div className={clsx(classes.canvasLayout, className)}>
