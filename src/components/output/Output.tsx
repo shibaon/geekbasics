@@ -4,7 +4,7 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from '
 import { useStyles } from './styles';
 import TextOutput from './TextOutput';
 import { execute, Executor, Functions } from '../../executor';
-import { drawRect, drawEllipse, drawCircle } from './drawing';
+import { drawRect, drawEllipse, drawCircle, drawLine } from './drawing';
 
 type Props = { className?: string; program?: { code: string } };
 
@@ -12,7 +12,7 @@ export const Output = memo(({ className, program }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const classes = useStyles();
   const isGraphic = useMemo(() => {
-    return program?.code ? !!['drawRect', 'drawEllipse', 'drawCircle', 'drawClear']
+    return program?.code ? !!['drawRect', 'drawEllipse', 'drawCircle', 'drawClear', 'drawLine']
         .find((method) => program.code.includes(method)) : false;
   }, [program]);
   const [output, setOutput] = useState('');
@@ -50,6 +50,7 @@ export const Output = memo(({ className, program }: Props) => {
         functions.drawEllipse = drawEllipse.bind(null, getCtx);
         functions.drawCircle = drawCircle.bind(null, getCtx);
         functions.drawClear = clear;
+        functions.drawLine = drawLine.bind(null, getCtx);
       }
 
       return execute(program.code, writeLine, writeError, functions);
