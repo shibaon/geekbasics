@@ -10,6 +10,7 @@ type Props = { className?: string; program?: { code: string } };
 
 export const Output = memo(({ className, program }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const outputRef = useRef<HTMLDivElement>(null);
   const classes = useStyles();
   const isGraphic = useMemo(() => {
     return program?.code ? !!['drawRect', 'drawEllipse', 'drawCircle', 'drawClear', 'drawLine']
@@ -57,15 +58,17 @@ export const Output = memo(({ className, program }: Props) => {
     });
   }, [program, isGraphic]);
 
-  if (!program) return <TextOutput className={className} />
-  if (!isGraphic) return <TextOutput className={className} output={output} />
-
   return (
-    <div className={clsx(classes.canvasLayout, className)}>
-      <div className={classes.canvasWrapper}>
-        <canvas ref={canvasRef} className={classes.canvas} />
-      </div>
-      <TextOutput className={classes.canvasLayoutTextView} output={output} />
+    <div className={clsx(className, { [classes.canvasLayout]: isGraphic })}>
+      {isGraphic && (
+        <div className={classes.canvasWrapper}>
+          <canvas ref={canvasRef} className={classes.canvas} />
+        </div>
+      )}
+      <TextOutput
+        className={clsx({ [classes.canvasLayoutTextView]: isGraphic })}
+        output={program ? output : undefined} preRef={outputRef}
+      />
     </div>
   );
 });

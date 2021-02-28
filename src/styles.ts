@@ -18,14 +18,29 @@ export const useStyles = makeStyles({
     bottom: 0,
   },
   leftSide: {
-    width: '50%',
     display: 'flex',
     flexDirection: 'column',
+    position: 'relative',
+    flexShrink: 0,
   },
   editor: {
     flexGrow: 1,
   },
   output: {
-    width: '50%',
+    flexShrink: 1,
+    flexGrow: 1,
+  },
+  gripper: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    width: 10,
+    cursor: 'ew-resize',
+    zIndex: 10,
+
+    '&:hover': {
+      background: 'rgba(255, 255, 255, .1)',
+    },
   },
 });

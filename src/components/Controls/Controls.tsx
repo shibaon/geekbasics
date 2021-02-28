@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import { Play } from '../../icons';
 import { Button } from './Button';
 import { useStyles } from './styles';
@@ -7,7 +7,7 @@ type Props = {
   onExecute?: () => void;
 };
 
-export const Controls = ({ onExecute }: Props) => {
+export const Controls = memo(({ onExecute }: Props) => {
   const onExecuteRef = useRef<() => void>();
   const classes = useStyles();
 
@@ -34,6 +34,6 @@ export const Controls = ({ onExecute }: Props) => {
       </Button>
     </div>
   );
-};
+});
 
 export default Controls;
