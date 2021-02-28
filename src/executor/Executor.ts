@@ -39,9 +39,12 @@ export class Executor {
     code = `(async () => { await new Promise((r) => setTimeout(r, 0)); ${code} })().catch((err) => {
       console.error(err.stack.split('\\n').slice(0, 2).join(' '));
     })`;
+    (iframeWindow as any).code = code;
 
     const iframeDoc = iframeWindow.document.open();
-    iframeDoc.write(`<script>${code}</script>`);
+    iframeDoc.write(`<script>
+      try { eval(window.code) } catch (err) { console.error(err.stack.split('\\n').slice(0, 2).join(' ')) }
+    </script>`);
     iframeDoc.close();
   }
 
